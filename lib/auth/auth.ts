@@ -4,6 +4,7 @@ import { MongoClient } from "mongodb";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import dns from "node:dns/promises";
+import { initializeUserBoard } from "../init-user-board";
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 const client = new MongoClient(process.env.MONGODB_URI!);
@@ -17,6 +18,15 @@ export const auth=betterAuth({
     ),
     emailAndPassword:{
         enabled:true,
+    },
+    databaseHooks:{
+        user:{
+            create:{
+                after:async(user)=>{
+                    await initializeUserBoard(user.id);
+                }
+            }
+        }
     }
 });
 
