@@ -88,14 +88,19 @@ function DroppableColumn(
                 </AlertDialogContent>
             </AlertDialog>
 
-            <Card className={`w-[300px] flex-shrink-0 shadow-md p-0 transition-all ${isOver ? "ring-2 ring-primary ring-offset-2" : ""}`}>
-                <CardHeader className={`${config.color} text-white rounded-t-lg pb-3 pt-3`}>
+            <Card className={`w-[300px] flex-shrink-0 shadow-sm border-gray-200 p-0 transition-all ${isOver ? "ring-2 ring-primary ring-offset-2 shadow-md" : ""}`}>
+                <CardHeader className={`${config.color} text-white rounded-t-lg py-2.5 px-3`}>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             {config.icon}
                             <CardTitle className="text-white text-base font-semibold">
                                 {column.name}
                             </CardTitle>
+                            {sortedjJobs.length > 0 && (
+                                <span className="text-xs font-semibold bg-white/25 text-white px-1.5 py-0.5 rounded-full leading-none">
+                                    {sortedjJobs.length}
+                                </span>
+                            )}
                         </div>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -103,9 +108,9 @@ function DroppableColumn(
                                     <MoreVertical className="h-4 w-4" />
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent>
+                            <DropdownMenuContent align="end" className="w-44">
                                 <DropdownMenuItem
-                                    className="text-destructive"
+                                    className="py-1.5 px-2 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
                                     onClick={() => setDeleteAllOpen(true)}
                                     disabled={sortedjJobs.length === 0}
                                 >
@@ -119,7 +124,7 @@ function DroppableColumn(
 
                 <CardContent
                     ref={setNodeRef}
-                    className="space-y-2 pt-4 bg-gray-50/50 h-[calc(100vh-12rem)] overflow-y-auto rounded-b-lg"
+                    className="space-y-2 pt-3 px-3 pb-2 bg-gray-50/60 h-[calc(100vh-12rem)] overflow-y-auto rounded-b-lg"
                 >
                     <SortableContext items={jobIds} strategy={verticalListSortingStrategy}>
                         {sortedjJobs.map((job) => (

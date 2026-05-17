@@ -36,11 +36,11 @@ async function DashBoardPage() {
 
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="container mx-auto p-6">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-black">{board.name}</h1>
-          <p className="text-gray-600">Track your job applications</p>
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-6 pt-5 pb-0">
+        <div className="mb-4">
+          <h1 className="text-2xl font-bold text-gray-900">{board.name}</h1>
+          <p className="text-sm text-gray-400 mt-0.5">Track your job applications</p>
         </div>
         <KanbanBoard board={board} userId={session.user.id} />
       </div>
