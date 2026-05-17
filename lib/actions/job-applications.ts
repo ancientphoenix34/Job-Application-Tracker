@@ -199,3 +199,39 @@ export async function updateJobApplication(
     revalidatePath("/dashboard");
     return { data: JSON.parse(JSON.stringify(updated)) };
 }
+
+export async function deleteJobApplication(id: string): Promise<{ success?: boolean; error?: string }> {
+    const session = await getSession();
+    if (!session?.user) return { error: "Unauthorized" };
+
+    await connectDB();
+
+    const job = await JobApplication.findById(id);
+    if (!job) return { error: "Job application not found" };
+    if (job.userId !== session.user.id) return { error: "Unauthorized" };
+
+    await Column.findByIdAndUpdate(job.columnId, { $pull: { jobApplications: id } });
+    await JobApplication.findByIdAndDelete(id);
+
+    revalidatePath("/dashboard");
+    return { success: true };
+}
+
+export async function deleteColumnJobs(columnId: string): Promise<{ success?: boolean; error?: string }> {
+    const session = await getSession();
+    if (!session?.user) return { error: "Unauthorized" };
+
+    await connectDB();
+
+    const column = await Column.findById(columnId);
+    if (!column) return { error: "Column not found" };
+
+    const board = await Board.findOne({ _id: column.boardId, userId: session.user.id });
+    if (!board) return { error: "Unauthorized" };
+
+    await JobApplication.deleteMany({ columnId, userId: session.user.id });
+    await Column.findByIdAndUpdate(columnId, { $set: { jobApplications: [] } });
+
+    revalidatePath("/dashboard");
+    return { success: true };
+}

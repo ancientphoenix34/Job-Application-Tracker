@@ -9,6 +9,7 @@ export interface JobApplication {
   jobUrl?: string;
   order: number;
   columnId?: string;
+  boardId?: string;
   tags?: string[];
   description?: string;
 }
