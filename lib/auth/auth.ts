@@ -10,19 +10,26 @@ dns.setServers(["1.1.1.1", "8.8.8.8"]);
 const client = new MongoClient(process.env.MONGODB_URI!);
 const db = client.db()
 
-export const auth=betterAuth({
-    database:mongodbAdapter(
-        db,{
-            client,
-        }
+export const auth = betterAuth({
+    baseURL: process.env.BETTER_AUTH_URL,
+    database: mongodbAdapter(
+        db, {
+        client,
+    }
     ),
-    emailAndPassword:{
-        enabled:true,
+    session: {
+        cookieCache: {
+            enabled: true,
+            maxAge: 60 * 60,
+        }
     },
-    databaseHooks:{
-        user:{
-            create:{
-                after:async(user)=>{
+    emailAndPassword: {
+        enabled: true,
+    },
+    databaseHooks: {
+        user: {
+            create: {
+                after: async (user) => {
                     await initializeUserBoard(user.id);
                 }
             }
@@ -30,21 +37,21 @@ export const auth=betterAuth({
     }
 });
 
-export async function getSession(){
-    const result=await auth.api.getSession({
-        headers:await headers()
+export async function getSession() {
+    const result = await auth.api.getSession({
+        headers: await headers()
     })
-    
+
     return result;
 }
 
 
-export async function signOut(){
-    const result=await auth.api.signOut({
-        headers:await headers()
+export async function signOut() {
+    const result = await auth.api.signOut({
+        headers: await headers()
     })
-     
-    if(result.success){
+
+    if (result.success) {
         redirect("/sign-in")
     }
 }

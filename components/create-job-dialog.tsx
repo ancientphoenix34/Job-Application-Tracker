@@ -7,32 +7,46 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { useState } from "react";
+import { createJobApplication } from "@/lib/actions/job-applications";
 
 
-interface CraeteJobApplicationDialogProps {
+interface CreateJobApplicationDialogProps {
     columnId: string;
     boardId: string;
 }
 
-export default function CreateJobApplicationDialog({ columnId, boardId }: CraeteJobApplicationDialogProps) {
-    const [open,setOpen] = useState<boolean>(false);
-    const [formData,setFormData]=useState({
-        company:"",
-        position:"",
-        location:"",
-        notes:"",
-        salary:"",
-        jobUrl:"",
-        tags:"",
-        description:"",
-    });
+const INITIAL_FORM_DATA={
+    company:"",
+    position:"",
+    location:"",
+    notes:"",
+    salary:"",
+    jobUrl:"",
+    tags:"",
+    description:""
+};
 
-    async function handleSubmit(e:React.FormEvent){
+export default function CreateJobApplicationDialog({ columnId, boardId }: CreateJobApplicationDialogProps) {
+    const [open, setOpen] = useState<boolean>(false);
+    const [formData, setFormData] = useState(INITIAL_FORM_DATA);
+
+    async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
 
-        try{
-          
-        }catch(err){
+        try {
+            const result = await createJobApplication({
+                ...formData,
+                columnId,
+                boardId,
+                tags: formData.tags.split(",").map((tag) => tag.trim()).filter((tag) => tag.length > 0),
+            });
+            if(result.error){
+                console.error("Failed to create job:", result.error);
+            }else{
+                setFormData(INITIAL_FORM_DATA);
+                setOpen(false);
+            }
+        } catch (err) {
             console.error(err)
         }
     }
@@ -59,74 +73,74 @@ export default function CreateJobApplicationDialog({ columnId, boardId }: Craete
                             <div className="space-y-2">
                                 <Label htmlFor="company">Company *</Label>
                                 <Input id="company"
-                                value={formData.company}
-                                onChange={(e)=>setFormData({...formData,company:e.target.value})}
-                                required />
+                                    value={formData.company}
+                                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                                    required />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="position">Position *</Label>
                                 <Input id="position"
-                                value={formData.position}
-                                onChange={(e)=>setFormData({...formData,position:e.target.value})}
-                                required />
+                                    value={formData.position}
+                                    onChange={(e) => setFormData({ ...formData, position: e.target.value })}
+                                    required />
                             </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="location">Location *</Label>
-                                <Input id="location" 
-                                value={formData.location}
-                                onChange={(e)=>setFormData({...formData,location:e.target.value})}
-                                required />
+                                <Input id="location"
+                                    value={formData.location}
+                                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                                    required />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="salary">Salary *</Label>
-                                <Input id="salary" 
-                                value={formData.salary}
-                                onChange={(e)=>setFormData({...formData,salary:e.target.value})}
-                                required 
-                                placeholder="e.g., $100k - $150k" />
+                                <Input id="salary"
+                                    value={formData.salary}
+                                    onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
+                                    required
+                                    placeholder="e.g., $100k - $150k" />
                             </div>
                         </div>
                         <div>
                             <div className="space-y-2">
                                 <Label htmlFor="jobUrl">Job URL</Label>
-                                <Input id="jobUrl" 
-                                value={formData.jobUrl}
-                                onChange={(e)=>setFormData({...formData,jobUrl:e.target.value})}
-                                required 
-                                placeholder="https://....." />
+                                <Input id="jobUrl"
+                                    value={formData.jobUrl}
+                                    onChange={(e) => setFormData({ ...formData, jobUrl: e.target.value })}
+                                    required
+                                    placeholder="https://....." />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="tags">Tags (comma-seperated)</Label>
-                                <Input id="tags" 
-                                value={formData.tags}
-                                onChange={(e)=>setFormData({...formData,tags:e.target.value})}
-                                required 
-                                placeholder="react,node,High pay,UI/UX" />
+                                <Input id="tags"
+                                    value={formData.tags}
+                                    onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                                    required
+                                    placeholder="react,node,High pay,UI/UX" />
                             </div>
-                            
+
                             <div className="space-y-2">
                                 <Label htmlFor="description">Description</Label>
-                                <Textarea id="description" 
-                                value={formData.description}
-                                onChange={(e)=>setFormData({...formData,description:e.target.value})}
-                                rows={3} 
-                                placeholder="Brief description of the role..." />
+                                <Textarea id="description"
+                                    value={formData.description}
+                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                    rows={3}
+                                    placeholder="Brief description of the role..." />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="notes">Notes</Label>
                                 <Textarea id="notes"
-                                 rows={4}
-                                 value={formData.notes}
-                                onChange={(e)=>setFormData({...formData,notes:e.target.value})} />
+                                    rows={4}
+                                    value={formData.notes}
+                                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })} />
                             </div>
                         </div>
                     </div>
 
                     <DialogFooter>
-                        <Button type="button" variant="outline" onClick={()=>setOpen(false)}>
+                        <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                             Cancel
                         </Button>
                         <Button type="submit">

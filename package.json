@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed:jobs":"tsx scrpits/seed.ts"
   },
   "dependencies": {
     "better-auth": "^1.5.4",
