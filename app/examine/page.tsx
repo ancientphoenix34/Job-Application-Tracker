@@ -160,10 +160,10 @@ export default function ExaminePage() {
                                         <Label htmlFor="jd-text">Paste job description</Label>
                                         <Textarea
                                             id="jd-text"
-                                            rows={10}
                                             placeholder="Paste the full job description here..."
                                             value={jobText}
                                             onChange={(e) => setJobText(e.target.value)}
+                                            className="resize-none h-64 overflow-y-auto"
                                         />
                                     </TabsContent>
                                     <TabsContent value="url" className="mt-3 space-y-1.5">
