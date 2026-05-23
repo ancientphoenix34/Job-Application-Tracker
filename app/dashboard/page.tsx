@@ -1,6 +1,7 @@
 
 
 import KanbanBoard from "@/components/kanban-board";
+import ImportJobDialog from "@/components/import-job-dialog";
 import { getSession } from "@/lib/auth/auth"
 import connectDB from "@/lib/db";
 import { Board } from "@/lib/models";
@@ -38,9 +39,12 @@ async function DashBoardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-6 pt-5 pb-0">
-        <div className="mb-4">
-          <h1 className="text-2xl font-bold text-gray-900">{board.name}</h1>
-          <p className="text-sm text-gray-400 mt-0.5">Track your job applications</p>
+        <div className="mb-4 flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">{board.name}</h1>
+            <p className="text-sm text-gray-400 mt-0.5">Track your job applications</p>
+          </div>
+          <ImportJobDialog columns={board.columns} boardId={board._id} />
         </div>
         <KanbanBoard board={board} userId={session.user.id} />
       </div>

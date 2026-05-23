@@ -1,6 +1,6 @@
 "use client"
 
-import { Briefcase, Ghost } from "lucide-react";
+import { Briefcase, Ghost, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { getSession, signOut } from "@/lib/auth/auth";
@@ -22,7 +22,7 @@ export default  function Navbar() {
     <nav className="border-b border-gray-200 bg-white shadow-sm">
       <div className="container mx-auto flex h-16 items-center px-4 justify-between">
         <Link
-          href="/"
+          href="/dashboard"
           className="flex items-center gap-2 text-xl font-semibold text-primary"
         >
           <Briefcase />
@@ -37,6 +37,15 @@ export default  function Navbar() {
                   className="text-gray-700 hover:text-black"
                 >
                   Dashboard
+                </Button>
+              </Link>
+              <Link href="/examine">
+                <Button
+                  variant="ghost"
+                  className="text-gray-700 hover:text-black gap-1.5"
+                >
+                  <Sparkles className="h-4 w-4" />
+                  Examine
                 </Button>
               </Link>
               <DropdownMenu>
