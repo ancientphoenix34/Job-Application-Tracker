@@ -1,11 +1,9 @@
 {
   "experimentalServices": {
     "frontend": {
-      "src": ".",
       "routePrefix": "/"
     },
     "ai-parser": {
-      "src": "services/ai-parser",
       "routePrefix": "/_/ai-parser"
     }
   }
