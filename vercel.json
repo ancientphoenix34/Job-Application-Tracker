@@ -6,7 +6,6 @@
     },
     "ai-parser": {
       "routePrefix": "/_/ai-parser",
-      "runtime": "@vercel/python",
       "entrypoint": "services/ai-parser/api/index.py"
     }
   }
