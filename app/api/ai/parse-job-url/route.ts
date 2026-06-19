@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/auth";
 
-const AI_SERVICE_URL = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}/ai-service`
-    : (process.env.AI_SERVICE_URL || "http://localhost:8000");
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL || "http://localhost:8000";
 
 export async function POST(req: NextRequest) {
     const session = await getSession();
