@@ -1,6 +1,5 @@
 import json
-import uuid
-import chromadb
+import numpy as np
 from openai import AsyncOpenAI
 from ..config.settings import settings
 from ..schemas.ats_schema import ATSResult
@@ -19,24 +18,16 @@ async def score_resume_against_job(resume_text: str, job_text: str) -> ATSResult
     )
     embeddings = [e.embedding for e in embed_resp.data]
 
-    chroma = chromadb.EphemeralClient()
-    col = chroma.create_collection(str(uuid.uuid4()))
-    col.add(
-        ids=[str(i) for i in range(len(chunks))],
-        embeddings=embeddings,
-        documents=[c["text"] for c in chunks],
-        metadatas=[{"section": c["section"]} for c in chunks],
-    )
-
     jd_embed = await oai.embeddings.create(
         model="text-embedding-3-small",
         input=[job_text[:6000]],
     )
-    results = col.query(
-        query_embeddings=[jd_embed.data[0].embedding],
-        n_results=min(5, len(chunks)),
-    )
-    context = "\n\n---\n\n".join(results["documents"][0])
+
+    emb_array = np.array(embeddings)
+    jd_vec = np.array(jd_embed.data[0].embedding)
+    sims = emb_array @ jd_vec / (np.linalg.norm(emb_array, axis=1) * np.linalg.norm(jd_vec))
+    top_idx = np.argsort(sims)[::-1][:min(5, len(chunks))]
+    context = "\n\n---\n\n".join(chunks[i]["text"] for i in top_idx)
 
     system_prompt = load_prompt("ats_scorer_prompt.txt")
     user_msg = (

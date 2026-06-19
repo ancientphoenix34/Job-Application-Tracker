@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .config.settings import settings
@@ -17,8 +18,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(health.router)
-app.include_router(parse_job_text.router)
-app.include_router(parse_job_url.router)
-app.include_router(parse_screenshot.router)
-app.include_router(score_resume.router)
+prefix = os.getenv("ROUTE_PREFIX", "")
+app.include_router(health.router, prefix=prefix)
+app.include_router(parse_job_text.router, prefix=prefix)
+app.include_router(parse_job_url.router, prefix=prefix)
+app.include_router(parse_screenshot.router, prefix=prefix)
+app.include_router(score_resume.router, prefix=prefix)
